@@ -1,0 +1,7 @@
+G:\C#\DinerPhilosophers\DinerPhilosophers\bin\Debug\DinerPhilosophers.exe
+G:\C#\DinerPhilosophers\DinerPhilosophers\bin\Debug\DinerPhilosophers.pdb
+G:\C#\DinerPhilosophers\DinerPhilosophers\obj\Debug\DinerPhilosophers.csproj.AssemblyReference.cache
+G:\C#\DinerPhilosophers\DinerPhilosophers\obj\Debug\DinerPhilosophers.csproj.SuggestedBindingRedirects.cache
+G:\C#\DinerPhilosophers\DinerPhilosophers\obj\Debug\DinerPhilosophers.csproj.CoreCompileInputs.cache
+G:\C#\DinerPhilosophers\DinerPhilosophers\obj\Debug\DinerPhilosophers.exe
+G:\C#\DinerPhilosophers\DinerPhilosophers\obj\Debug\DinerPhilosophers.pdb
