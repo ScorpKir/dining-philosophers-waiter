@@ -6,13 +6,13 @@ namespace DinerPhilosophers
     static class Program
     {
         // Константа обозначающая количество философов
-        private const int PhilosopherCount = 5;
+        private const int PHILOSOPHER_COUNT = 5;
         // Массив вилок
-        private static Fork[] _forks = new Fork[PhilosopherCount];
+        private static Fork[] _forks = new Fork[PHILOSOPHER_COUNT];
         // Массив философов
-        private static Philosopher[] _philosophers = new Philosopher[PhilosopherCount];
+        private static Philosopher[] _philosophers = new Philosopher[PHILOSOPHER_COUNT];
         // Массив потоков
-        private static Thread[] _threads = new Thread[PhilosopherCount];
+        private static Thread[] _threads = new Thread[PHILOSOPHER_COUNT];
         
         static void Main()
         {
@@ -29,12 +29,15 @@ namespace DinerPhilosophers
             // Создаём философов и заставляем их думать
             for (int i = 0; i < _philosophers.Length; i++)
             {
+                // В массив добавляем объект философа
                 _philosophers[i] = new Philosopher( _forks[(i + 1) % _forks.Length], _forks[i], $"{i + 1}", 5);
+                // Создаём новый поток для философа. В качестве точки старта берём метод Think
                 _threads[i] = new Thread(_philosophers[i].Think);
+                // Стартуем поток
                 _threads[i].Start();
             }
             
-            // Ждём пока пользователь прекратит это безумное пиршество
+            // Ждём ввода клавиши пользователя, чтобы завершить обед
             Console.ReadKey();
 
             // Прекращаем все потоки

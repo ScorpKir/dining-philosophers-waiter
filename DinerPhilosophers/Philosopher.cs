@@ -16,36 +16,37 @@ namespace DinerPhilosophers
     public class Philosopher
     {
         // Имя философа
-         public string Name { get; set; }
+        private readonly string _name;
 
          // Состояние философа
-        public PhilosopherState State { get; set; }
+         private PhilosopherState _state;
 
         // Максимальное количество идущих подряд размышлений без приема пищи
-        readonly int _starvationThreshold;
+        private readonly int _starvationThreshold;
 
         // Вилки справа и слева относительно философа
-        public readonly Fork RightFork;
-        public readonly Fork LeftFork;
+        private readonly Fork _rightFork;
+        private readonly Fork _leftFork;
 
         // Штука чтобы рандомить :)
-        Random rand = new Random();
+        private readonly Random _rand = new Random();
         
         // Текущая серия размышлений
-        int _contThinkCount = 0;
+        private int _contThinkCount;
 
         // Конструктор класса
         public Philosopher(Fork rightFork, Fork leftFork, string name, int starvThreshold)
         {
-            RightFork = rightFork;
-            LeftFork = leftFork;
-            Name = name;
-            State = PhilosopherState.Thinking;
+            _rightFork = rightFork;
+            _leftFork = leftFork;
+            _name = name;
+            _state = PhilosopherState.Thinking;
             _starvationThreshold = starvThreshold;
+            _contThinkCount = 0;
         }
 
         // Метод приёма пищи
-        public void Eat()
+        private void Eat()
         {
             // Берём правую вилку в правую руку
             if (TakeForkInRightHand())
@@ -55,45 +56,45 @@ namespace DinerPhilosophers
                 {
                     // Если обе вилки в руке, то кушаем
                     // Меняем состояние на "Кушающий"
-                    this.State = PhilosopherState.Eating;
+                    _state = PhilosopherState.Eating;
                     // Пишем что философ ест и указываем номера вилок
-                    Console.WriteLine("(:::) {0} is eating..with {1} and {2}", Name, RightFork.ForkId, LeftFork.ForkId);
+                    Console.WriteLine("(:::) {0} is eating..with {1} and {2}", _name, _rightFork.ForkId, _leftFork.ForkId);
                     // Симулируем процесс поедания пищи
-                    Thread.Sleep(rand.Next(5000, 10000));
+                    Thread.Sleep(_rand.Next(5000, 10000));
 
                     // Обнуляем серию размышлений
                     _contThinkCount = 0;
 
                     // Помещаем вилки обратно
-                    RightFork.Put();
-                    LeftFork.Put();
+                    _rightFork.Put();
+                    _leftFork.Put();
                 }
                 // Получилось взять правую вилку, но левую не получилось
                 else
                 {
                     // Пробуем подождать ещё чуть-чуть, чтобы попытаться ещё раз
-                    Thread.Sleep(rand.Next(100, 400));
+                    Thread.Sleep(_rand.Next(100, 400));
                     if (TakeForkInLeftHand())
                     {
                         // Если всё таки получилось взять левую вилку
                         // Меняем состояние на "кушающий"
-                        this.State = PhilosopherState.Eating;
+                        _state = PhilosopherState.Eating;
                         // Пишем что философ кушает и указываем вилки
-                        Console.WriteLine("(:::) {0} is eating..with {1} and {2}", Name, RightFork.ForkId, LeftFork.ForkId);
+                        Console.WriteLine("(:::) {0} is eating..with {1} and {2}", _name, _rightFork.ForkId, _leftFork.ForkId);
                         // Симулируем процесс поедания пищи
-                        Thread.Sleep(rand.Next(5000, 10000));
+                        Thread.Sleep(_rand.Next(5000, 10000));
 
                         // Обнуляем серию размышлений без еды
                         _contThinkCount = 0;
 
                         // Кладём вилки
-                        RightFork.Put();
-                        LeftFork.Put();
+                        _rightFork.Put();
+                        _leftFork.Put();
                     }
                     // Если левую вилку так и не получилось взять, то кладём правую
                     else
                     {
-                        RightFork.Put();
+                        _rightFork.Put();
                     }
                 }
             }
@@ -104,24 +105,24 @@ namespace DinerPhilosophers
                 if (TakeForkInLeftHand())
                 {
                     // Ждём небольшой период времени чтобы попытаться взять правую вилку 
-                    Thread.Sleep(rand.Next(100, 400));
+                    Thread.Sleep(_rand.Next(100, 400));
                     if (TakeForkInRightHand())
                     {
                         // Если получилось взять правую вилку, то кушаем
                         // Действия здесь идентичны процессу поедания пищи в прошлый раз
-                        this.State = PhilosopherState.Eating;
-                        Console.WriteLine("(:::) {0} is eating..with {1} and {2}", Name, RightFork.ForkId, LeftFork.ForkId);
-                        Thread.Sleep(rand.Next(5000, 10000));
+                        this._state = PhilosopherState.Eating;
+                        Console.WriteLine("(:::) {0} is eating..with {1} and {2}", _name, _rightFork.ForkId, _leftFork.ForkId);
+                        Thread.Sleep(_rand.Next(5000, 10000));
 
                         _contThinkCount = 0;
 
-                        RightFork.Put();
-                        LeftFork.Put();
+                        _rightFork.Put();
+                        _leftFork.Put();
                     }
                     else
                     {
                         // Если правая вилка все равно оказалась недоступна, то кладём и левую
-                        LeftFork.Put();
+                        _leftFork.Put();
                     }
                 }
             }
@@ -132,18 +133,18 @@ namespace DinerPhilosophers
         public void Think()
         {
             // Обозначаем состояние как "Размышляющий"
-            this.State = PhilosopherState.Thinking;
+            this._state = PhilosopherState.Thinking;
             // Пишем, что философ думает и пишем насколько долго он это делает
-            Console.WriteLine("^^*^^ {0} is thinking...on {1}", Name, Thread.CurrentThread.Priority.ToString());
+            Console.WriteLine("^^*^^ {0} is thinking...on {1}", _name, Thread.CurrentThread.Priority.ToString());
             // Симулируем процесс размышления
-            Thread.Sleep(rand.Next(2500,20000));
+            Thread.Sleep(_rand.Next(2500,20000));
             // Увеличиваем серию размышлений на 1
             _contThinkCount++;
 
             if (_contThinkCount > _starvationThreshold)
             {
                 // Если серия размышлений достигла предела, то пишем, что философ голодает
-                Console.WriteLine(":ooooooooooooooooooooooooooooooooooooooooooooooo: {0} is starving", Name);
+                Console.WriteLine(":ooooooooooooooooooooooooooooooooooooooooooooooo: {0} is starving", _name);
             }
 
             // Пытаемся поесть
@@ -153,13 +154,13 @@ namespace DinerPhilosophers
         // Метод взятия левой вилки
         private bool TakeForkInLeftHand()
         {
-            return LeftFork.Take(Name);
+            return _leftFork.Take(_name);
         }
 
         // Метод взятия правой вилки
         private bool TakeForkInRightHand()
         {
-            return RightFork.Take(Name);
+            return _rightFork.Take(_name);
         }
     }
 }
