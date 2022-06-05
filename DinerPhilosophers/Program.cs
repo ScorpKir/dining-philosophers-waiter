@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 
 namespace DinerPhilosophers
@@ -6,20 +7,20 @@ namespace DinerPhilosophers
     static class Program
     {
         // Константа обозначающая количество философов
-        private const int PHILOSOPHER_COUNT = 5;
+        private const int PhilosopherCount = 5;
         // Массив вилок
-        private static Fork[] _forks = new Fork[PHILOSOPHER_COUNT];
+        private static readonly Fork[] Forks = new Fork[PhilosopherCount];
         // Массив философов
-        private static Philosopher[] _philosophers = new Philosopher[PHILOSOPHER_COUNT];
+        private static readonly Philosopher[] Philosophers = new Philosopher[PhilosopherCount];
         // Массив потоков
-        private static Thread[] _threads = new Thread[PHILOSOPHER_COUNT];
+        private static readonly Thread[] Threads = new Thread[PhilosopherCount];
         
         static void Main()
         {
             // Создаём вилки и присваиваем им состояние "На столе"
-            for (int i = 0; i < _forks.Length; i++)
+            for (int i = 0; i < Forks.Length; i++)
             {
-                _forks[i] = new Fork
+                Forks[i] = new Fork
                 {
                     ForkId = $"{i + 1}",
                     State = ForkState.OnTheTable
@@ -27,25 +28,43 @@ namespace DinerPhilosophers
             }
 
             // Создаём философов и заставляем их думать
-            for (int i = 0; i < _philosophers.Length; i++)
+            for (int i = 0; i < Philosophers.Length; i++)
             {
                 // В массив добавляем объект философа
-                _philosophers[i] = new Philosopher( _forks[(i + 1) % _forks.Length], _forks[i], $"{i + 1}", 5);
+                Philosophers[i] = new Philosopher( Forks[(i + 1) % Forks.Length], Forks[i], $"{i + 1}", 5);
                 // Создаём новый поток для философа. В качестве точки старта берём метод Think
-                _threads[i] = new Thread(_philosophers[i].Think);
+                Threads[i] = new Thread(Philosophers[i].Think);
                 // Стартуем поток
-                _threads[i].Start();
+                Threads[i].Start();
             }
             
             // Ждём ввода клавиши пользователя, чтобы завершить обед
             Console.ReadKey();
 
             // Прекращаем все потоки
-            foreach (Thread thread in _threads)
+            foreach (Thread thread in Threads)
             {
                 if (thread.IsAlive)
                 {
                     thread.Interrupt();
+                }
+            }
+            
+            PrintStats(Philosophers);
+        }
+
+        private static void PrintStats(Philosopher[] philosophers)
+        {
+            var totalEat = philosophers.Sum(philosopher => philosopher.EatCount);
+
+            if (totalEat <= 0) return;
+            {
+                Console.WriteLine("Total statistics");
+                Console.WriteLine($"Total: {totalEat}");
+                foreach (var philosopher in philosophers)
+                {
+                    Console.WriteLine(
+                        $"Philosopher {philosopher.Name} eaten {100.0 * philosopher.EatCount / totalEat}%");
                 }
             }
         }
